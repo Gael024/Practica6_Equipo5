@@ -56,6 +56,43 @@ services:
     networks:
       - app-network
 
+
+  ms_contacto_atencion:
+    build:
+      context: ./backend/ms_contacto_atencion
+      dockerfile: Dockerfile
+    container_name: ms_contacto_atencion
+    restart: always
+    ports:
+      - '3003:3000'
+    environment:
+      PORT: 3000
+      DB_HOST: db_contactos
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: contactos_db
+      DB_DATABASE: contactos_db
+    depends_on:
+      - db_contactos
+    networks:
+      - app-network
+
+  db_contactos:
+    image: postgres:16-alpine
+    container_name: db_contactos
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: contactos_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata_contactos:/var/lib/postgresql/data
+    networks:
+      - app-network
+
   frontend:
     build:
       context: ./frontend
@@ -76,3 +113,4 @@ networks:
 
 volumes:
   pgdata_citas:
+  pgdata_contactos:
