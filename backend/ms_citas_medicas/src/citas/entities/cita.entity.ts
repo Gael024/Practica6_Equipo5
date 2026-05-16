@@ -2,8 +2,6 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 export enum EstadoCita {
@@ -18,31 +16,29 @@ export class Cita {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  pacienteId: number;
+  @Column({ name: 'nombre' })
+  nombre: string;
 
-  @Column()
+  @Column({ name: 'correo' })
   email: string;
 
-  @Column()
+  @Column({ name: 'telefono' })
+  telefono: string;
+
+  @Column({ name: 'especialidad' })
   especialidad: string;
 
-  @Column({ type: 'date' })
+  @Column({ name: 'fechacita', type: 'date' })
   fecha: string;
 
-  @Column({ type: 'time' })
+  @Column({ name: 'horacita', type: 'time' })
   hora: string;
 
   @Column({
-    type: 'enum',
-    enum: EstadoCita,
+    name: 'estado',
+    type: 'varchar',
+    length: 20,
     default: EstadoCita.PENDIENTE,
   })
   estado: EstadoCita;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

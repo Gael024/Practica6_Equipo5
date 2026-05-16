@@ -19,9 +19,9 @@ import { Cita } from './citas/entities/cita.entity';
       port: Number(process.env.DB_PORT) || 5432,
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_DATABASE || 'citas_db',
+      database: process.env.DB_DATABASE || process.env.DB_NAME || 'citas_db',
       entities: [Cita],
-      synchronize: true,
+      synchronize: false,
     }),
 
     CitasModule,
