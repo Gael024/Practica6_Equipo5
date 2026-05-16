@@ -1,68 +1,71 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface CitaInterface {
-  id: string;
+  id: number;
   nombre: string;
-  email: string;
+  correo: string;
   telefono: string;
   especialidad: string;
-  fecha: string;
-  hora: string;
-  motivo: string;
-  estado: string;
-  fechaRegistro: string;
+  fechaCita: string;
+  horaCita: string;
+}
+
+// Interfaz para crear una cita (sin id, lo genera la BD)
+export interface CreateCitaDto {
+  nombre: string;
+  correo: string;
+  telefono: string;
+  especialidad: string;
+  fechaCita: string;
+  horaCita: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class Cita {
+  private apiUrl = 'http://localhost:3001/citas';
   private citasSubject = new BehaviorSubject<CitaInterface[]>([]);
   public citas$ = this.citasSubject.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.cargarCitas();
   }
 
-  private cargarCitas(): void {
-    const citasStorage = localStorage.getItem('citas');
-    const citas = citasStorage ? JSON.parse(citasStorage) : [];
-    this.citasSubject.next(citas);
+  // Cargar todas las citas desde el backend
+  cargarCitas(): void {
+    this.http.get<CitaInterface[]>(this.apiUrl).subscribe({
+      next: (citas) => this.citasSubject.next(citas),
+      error: (err) => console.error('Error al cargar citas:', err)
+    });
   }
 
   getCitas(): CitaInterface[] {
     return this.citasSubject.value;
   }
 
-  agregarCita(cita: CitaInterface): void {
-    const citas = this.citasSubject.value;
-    citas.push(cita);
-    localStorage.setItem('citas', JSON.stringify(citas));
-    this.citasSubject.next([...citas]);
+  // Registrar una nueva cita en el backend (POST)
+  agregarCita(cita: CreateCitaDto): Observable<CitaInterface> {
+    const obs = this.http.post<CitaInterface>(this.apiUrl, cita);
+    obs.subscribe({
+      next: () => this.cargarCitas(), // Recargar la lista después de agregar
+      error: (err) => console.error('Error al registrar cita:', err)
+    });
+    return obs;
   }
 
-  actualizarCita(id: string, citaActualizada: Partial<CitaInterface>): void {
-    const citas = this.citasSubject.value;
-    const index = citas.findIndex(c => c.id === id);
-    if (index !== -1) {
-      citas[index] = { ...citas[index], ...citaActualizada };
-      localStorage.setItem('citas', JSON.stringify(citas));
-      this.citasSubject.next([...citas]);
-    }
+  // Obtener una cita por ID
+  obtenerCita(id: number): Observable<CitaInterface> {
+    return this.http.get<CitaInterface>(`${this.apiUrl}/${id}`);
   }
 
-  eliminarCita(id: string): void {
-    const citas = this.citasSubject.value.filter(c => c.id !== id);
-    localStorage.setItem('citas', JSON.stringify(citas));
-    this.citasSubject.next(citas);
-  }
-
-  obtenerCita(id: string): CitaInterface | undefined {
-    return this.citasSubject.value.find(c => c.id === id);
-  }
-
-  generarID(): string {
-    return 'CIT-' + Date.now() + Math.random().toString(36).substr(2, 9);
+  // Eliminar una cita (DELETE)
+  eliminarCita(id: number): void {
+    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => this.cargarCitas(),
+      error: (err) => console.error('Error al eliminar cita:', err)
+    });
   }
 }

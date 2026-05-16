@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # ========================
+  # Base de datos PostgreSQL
+  # ========================
+  db_citas:
+    image: postgres:16-alpine
+    container_name: db_citas
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: citas_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata_citas:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # ================================
+  # Microservicio: Agendar Citas
+  # ================================
+  ms_agendar_citas:
+    build:
+      context: ./backend/ms_agendar_citas
+      dockerfile: Dockerfile
+    container_name: ms_agendar_citas
+    restart: always
+    ports:
+      - '3001:3000'
+    environment:
+      PORT: 3000
+      DB_HOST: db_citas
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: citas_db
+    depends_on:
+      - db_citas
+    networks:
+      - app-network
+
+  # ========================
+  # Frontend Angular
+  # ========================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - '4200:80'
+    depends_on:
+      - ms_agendar_citas
+    networks:
+      - app-network
+
+# ========================
+# Red compartida
+# ========================
+networks:
+  app-network:
+    driver: bridge
+
+# ========================
+# Volúmenes persistentes
+# ========================
+volumes:
+  pgdata_citas:

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Cita, CitaInterface } from '../../services/cita';
+import { Cita, CreateCitaDto } from '../../services/cita';
 
 @Component({
   selector: 'app-registro',
@@ -57,28 +57,30 @@ export class RegistroPage implements OnInit {
       return;
     }
 
-    const nuevaCita: CitaInterface = {
-      id: this.citaService.generarID(),
+    // Mapear los campos del formulario a los nombres del backend
+    const nuevaCita: CreateCitaDto = {
       nombre: this.formCita.value.nombre,
-      email: this.formCita.value.email,
+      correo: this.formCita.value.email,
       telefono: this.formCita.value.telefono,
       especialidad: this.formCita.value.especialidad,
-      fecha: this.formCita.value.fecha,
-      hora: this.formCita.value.hora,
-      motivo: this.formCita.value.motivo,
-      estado: 'Programada',
-      fechaRegistro: new Date().toLocaleString()
+      fechaCita: this.formCita.value.fecha,
+      horaCita: this.formCita.value.hora,
     };
 
-    this.citaService.agregarCita(nuevaCita);
+    this.citaService.agregarCita(nuevaCita).subscribe({
+      next: () => {
+        this.mostrarAlerta = true;
+        this.formCita.reset();
+        this.submitted = false;
 
-    this.mostrarAlerta = true;
-    this.formCita.reset();
-    this.submitted = false;
-
-    setTimeout(() => {
-      this.router.navigate(['/citas']);
-    }, 2000);
+        setTimeout(() => {
+          this.router.navigate(['/citas']);
+        }, 2000);
+      },
+      error: (err) => {
+        console.error('Error al guardar la cita:', err);
+      }
+    });
   }
 
   cerrarAlerta(): void {

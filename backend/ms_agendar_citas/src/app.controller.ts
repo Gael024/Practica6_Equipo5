@@ -1,24 +1,28 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { AppService } from './app.service';
+import { CreateCitaDto } from './dto/create-cita.dto';
+import { Cita } from './entities/cita.entity';
 
-@Controller('/registro')
+@Controller('citas')
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
-  // Endpoint para registrar una cita
+  // POST /citas — Registrar una nueva cita
   @Post()
-  registrarCita() {
-    return this.appService.registrarCita();
+  registrarCita(@Body() createCitaDto: CreateCitaDto): Promise<Cita> {
+    return this.appService.registrarCita(createCitaDto);
   }
 
-  // Para obtener todas las citas
+  // GET /citas — Obtener todas las citas
   @Get()
-  obtenerCitas() {
+  obtenerCitas(): Promise<Cita[]> {
     return this.appService.obtenerCitas();
   }
+
+  // GET /citas/:id — Obtener una cita por ID
+  @Get(':id')
+  obtenerCitaPorId(@Param('id') id: number): Promise<Cita | null> {
+    return this.appService.obtenerCitaPorId(id);
+  }
+
 }
