@@ -1,0 +1,131 @@
+<!-- Contenido Principal -->
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="bi bi-calendar-check"></i> Agendar Nueva Cita
+          </h3>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="formCita" (ngSubmit)="onSubmit()" novalidate>
+            <!-- Nombre Completo -->
+            <div class="mb-3">
+              <label for="nombre" class="form-label">
+                <i class="bi bi-person"></i> Nombre Completo
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" formControlName="nombre" id="nombre"
+                     placeholder="Ej: Juan Pérez" required>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('nombre')">
+                El nombre es requerido.
+              </div>
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div class="mb-3">
+              <label for="email" class="form-label">
+                <i class="bi bi-envelope"></i> Correo Electrónico
+                <span class="text-danger">*</span>
+              </label>
+              <input type="email" class="form-control" formControlName="email" id="email"
+                     placeholder="ejemplo@correo.com" required>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                Ingrese un correo válido (ejemplo@dominio.com).
+              </div>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="mb-3">
+              <label for="telefono" class="form-label">
+                <i class="bi bi-telephone"></i> Teléfono
+                <span class="text-danger">*</span>
+              </label>
+              <input type="tel" class="form-control" formControlName="telefono" id="telefono"
+                     placeholder="0000000000" maxlength="10" pattern="[0-9]{10}" inputmode="numeric" required>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('telefono')">
+                Ingrese un teléfono válido (exactamente 10 dígitos).
+              </div>
+            </div>
+
+            <!-- Especialidad -->
+            <div class="mb-3">
+              <label for="especialidad" class="form-label">
+                <i class="bi bi-hospital"></i> Especialidad
+                <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" formControlName="especialidad" id="especialidad" required>
+                <option value="">Seleccione una especialidad</option>
+                <option value="Pediatría">Pediatría</option>
+                <option value="Ginecología">Ginecología</option>
+                <option value="Odontología">Odontología</option>
+                <option value="Oftalmología">Oftalmología</option>
+                <option value="Medicina General">Medicina General</option>
+                <option value="Cardiología">Cardiología</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('especialidad')">
+                Debe seleccionar una especialidad.
+              </div>
+            </div>
+
+            <!-- Fecha de la Cita -->
+            <div class="mb-3">
+              <label for="fecha" class="form-label">
+                <i class="bi bi-calendar"></i> Fecha de la Cita
+                <span class="text-danger">*</span>
+              </label>
+              <input type="date" class="form-control" formControlName="fecha" id="fecha" required>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('fecha')">
+                La fecha es requerida y no puede ser menor a hoy.
+              </div>
+            </div>
+
+            <!-- Hora de la Cita -->
+            <div class="mb-3">
+              <label for="hora" class="form-label">
+                <i class="bi bi-clock"></i> Hora de la Cita
+                <span class="text-danger">*</span>
+              </label>
+              <input type="time" class="form-control" formControlName="hora" id="hora" required>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('hora')">
+                La hora es requerida.
+              </div>
+            </div>
+
+            <!-- Motivo de la Consulta -->
+            <div class="mb-3">
+              <label for="motivo" class="form-label">
+                <i class="bi bi-chat-dots"></i> Motivo de la Consulta
+                <span class="text-danger">*</span>
+              </label>
+              <textarea class="form-control" formControlName="motivo" id="motivo" rows="4"
+                        placeholder="Describa brevemente el motivo de su consulta..." required></textarea>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('motivo')">
+                El motivo de la consulta es requerido.
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-secondary" (click)="formCita.reset()">
+                <i class="bi bi-arrow-clockwise"></i> Limpiar
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="!formCita.valid">
+                <i class="bi bi-check-circle"></i> Guardar Cita
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alerta de éxito -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div class="alert alert-success alert-dismissible fade" [class.show]="mostrarAlerta" role="alert" *ngIf="mostrarAlerta">
+    <i class="bi bi-check-circle"></i> ¡Cita guardada exitosamente!
+    <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+  </div>
+</div>

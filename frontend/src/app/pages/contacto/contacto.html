@@ -1,0 +1,115 @@
+<!-- Contenido Principal -->
+<div class="container py-5">
+  <div class="row">
+    <!-- Columna de información de contacto -->
+    <div class="col-md-6 mb-4">
+      <h2 class="mb-4">
+        <i class="bi bi-telephone"></i> Información de Contacto
+      </h2>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-geo-alt"></i> Dirección
+          </h5>
+          <p class="card-text">
+            Calle Principal 123<br>
+            Código Postal: 10101
+          </p>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-telephone-fill"></i> Teléfono
+          </h5>
+          <p class="card-text">
+            <strong>Principal:</strong> +1 (555) 000-0000<br>
+            <strong>Emergencias:</strong> +1 (555) 000-0001
+          </p>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-envelope"></i> Correo Electrónico
+          </h5>
+          <p class="card-text">
+            <strong>General:</strong> info@saludagenda.com<br>
+            <strong>Citas:</strong> citas@saludagenda.com
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-clock"></i> Horario de Atención
+          </h5>
+          <p class="card-text">
+            <strong>Lunes - Viernes:</strong> 8:00 AM - 6:00 PM<br>
+            <strong>Sábado:</strong> 9:00 AM - 2:00 PM<br>
+            <strong>Domingo:</strong> Cerrado
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna de formulario -->
+    <div class="col-md-6">
+      <h2 class="mb-4">
+        <i class="bi bi-chat-dots"></i> Formulario de Contacto
+      </h2>
+
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="formContacto" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre Completo</label>
+              <input type="text" class="form-control" formControlName="nombre" id="nombre"
+                     placeholder="Su nombre" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" formControlName="email" id="email"
+                     placeholder="su@correo.com" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="telefono" class="form-label">Teléfono (Opcional)</label>
+              <input type="tel" class="form-control" formControlName="telefono" id="telefono"
+                     placeholder="+1 (555) 000-0000">
+            </div>
+
+            <div class="mb-3">
+              <label for="asunto" class="form-label">Asunto</label>
+              <input type="text" class="form-control" formControlName="asunto" id="asunto"
+                     placeholder="Asunto de su mensaje" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="mensaje" class="form-label">Mensaje</label>
+              <textarea class="form-control" formControlName="mensaje" id="mensaje" rows="5"
+                        placeholder="Escriba su mensaje aquí..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" [disabled]="!formContacto.valid">
+              <i class="bi bi-send"></i> Enviar Mensaje
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alerta de éxito -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div class="alert alert-success alert-dismissible fade" [class.show]="mostrarAlerta" role="alert" *ngIf="mostrarAlerta">
+    <i class="bi bi-check-circle"></i> ¡Mensaje enviado correctamente!
+    <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+  </div>
+</div>
