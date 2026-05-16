@@ -19,10 +19,5 @@ export class AppController {
     return this.appService.obtenerCitas();
   }
 
-  // GET Para obtener una cita por ID
-  @Get(':id')
-  obtenerCitaPorId(@Param('id') id: number): Promise<Cita | null> {
-    return this.appService.obtenerCitaPorId(id);
-  }
 
 }
