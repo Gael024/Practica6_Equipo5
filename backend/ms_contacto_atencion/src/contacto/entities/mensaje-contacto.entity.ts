@@ -8,7 +8,7 @@ import {
 @Entity('mensajes_contacto')
 export class MensajeContacto {
     @PrimaryGeneratedColumn()
-id: number;
+    id: number;
 
     @Column({ length: 150 })
     nombre: string;

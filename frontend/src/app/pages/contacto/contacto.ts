@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-contacto',
@@ -12,6 +13,11 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 export class ContactoPage {
   formContacto: FormGroup;
   mostrarAlerta = false;
+  enviando = false;
+  errorEnvio = false;
+
+  // URL del microservicio de contacto
+  private apiUrl = 'http://localhost:3003/api/contacto';
 
   constructor(private fb: FormBuilder) {
     this.formContacto = this.fb.group({
@@ -24,18 +30,31 @@ export class ContactoPage {
   }
 
   onSubmit(): void {
-    if (this.formContacto.valid) {
-      const datosContacto = this.formContacto.value;
-      console.log('Datos de contacto:', datosContacto);
-
-      // Aquí se enviaría al backend
-      this.mostrarAlerta = true;
-      this.formContacto.reset();
-
-      setTimeout(() => {
-        this.mostrarAlerta = false;
-      }, 3000);
-    }
+    if (this.formContacto.invalid) return;
+ 
+    this.enviando = true;
+    this.errorEnvio = false;
+ 
+    // El backend espera "correo", el form usa "email" → mapeamos aquí
+    const { email, ...resto } = this.formContacto.value;
+    const payload = { ...resto, correo: email };
+ 
+    this.http.post(this.apiUrl, payload).subscribe({
+      next: () => {
+        this.mostrarAlerta = true;
+        this.enviando = false;
+        this.formContacto.reset();
+ 
+        setTimeout(() => {
+          this.mostrarAlerta = false;
+        }, 3000);
+      },
+      error: (err) => {
+        console.error('Error al enviar mensaje:', err);
+        this.enviando = false;
+        this.errorEnvio = true;
+      },
+    });
   }
 
   cerrarAlerta(): void {

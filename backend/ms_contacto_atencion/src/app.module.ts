@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { Contacto } from './contacto/entities/mensaje-contacto.entity';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ContactoModule } from './contacto/contacto.module';
+
+import { MensajeContacto } from './contacto/entities/mensaje-contacto.entity';
 
 
 @Module({
@@ -17,7 +19,7 @@ import { Contacto } from './contacto/entities/mensaje-contacto.entity';
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_DATABASE || process.env.DB_NAME ||'contactos_db',
-      entities: [Contacto],
+      entities: [MensajeContacto],
       synchronize: true,
     }),
 
