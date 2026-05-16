@@ -22,10 +22,4 @@ export class AppService {
     return this.citaRepository.find();
   }
 
-  // Obtener una cita por su ID
-  async obtenerCitaPorId(id: number): Promise<Cita | null> {
-    return this.citaRepository.findOneBy({ id });
-  }
-
-
 }
