@@ -96,8 +96,11 @@
                         placeholder="Escriba su mensaje aquí..." required></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100" [disabled]="!formContacto.valid">
-              <i class="bi bi-send"></i> Enviar Mensaje
+            <button type="submit" class="btn btn-primary w-100"
+                    [disabled]="!formContacto.valid || enviando">
+              <span *ngIf="enviando" class="spinner-border spinner-border-sm me-2"></span>
+              <i *ngIf="!enviando" class="bi bi-send"></i>
+              {{ enviando ? 'Enviando...' : 'Enviar Mensaje' }}
             </button>
           </form>
         </div>
@@ -108,7 +111,8 @@
 
 <!-- Alerta de éxito -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div class="alert alert-success alert-dismissible fade" [class.show]="mostrarAlerta" role="alert" *ngIf="mostrarAlerta">
+  <div class="alert alert-success alert-dismissible fade"
+    [class.show]="mostrarAlerta" role="alert" *ngIf="mostrarAlerta">
     <i class="bi bi-check-circle"></i> ¡Mensaje enviado correctamente!
     <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
   </div>
