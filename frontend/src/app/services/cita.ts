@@ -10,6 +10,7 @@ export interface CitaInterface {
   especialidad: string;
   fechaCita: string;
   horaCita: string;
+  estado?: string;
 }
 
 // Interfaz para crear una cita (sin id, lo genera la BD)
@@ -26,7 +27,11 @@ export interface CreateCitaDto {
   providedIn: 'root',
 })
 export class Cita {
-  private apiUrl = 'http://localhost:3001/citas';
+
+
+  //private apiUrl = 'http://localhost:3001/citas';
+  private apiAgendarUrl = 'http://localhost:3001/citas';
+  private apiCitasMedicasUrl = 'http://localhost:3002/citas';
   private citasSubject = new BehaviorSubject<CitaInterface[]>([]);
   public citas$ = this.citasSubject.asObservable();
 
@@ -36,7 +41,7 @@ export class Cita {
 
   // Cargar todas las citas desde el backend
   cargarCitas(): void {
-    this.http.get<CitaInterface[]>(this.apiUrl).subscribe({
+    this.http.get<CitaInterface[]>(this.apiCitasMedicasUrl).subscribe({
       next: (citas) => this.citasSubject.next(citas),
       error: (err) => console.error('Error al cargar citas:', err)
     });
@@ -48,7 +53,7 @@ export class Cita {
 
   // Registrar una nueva cita en el backend (POST)
   agregarCita(cita: CreateCitaDto): Observable<CitaInterface> {
-    const obs = this.http.post<CitaInterface>(this.apiUrl, cita);
+    const obs = this.http.post<CitaInterface>(this.apiAgendarUrl, cita);
     obs.subscribe({
       next: () => this.cargarCitas(), // Recargar la lista después de agregar
       error: (err) => console.error('Error al registrar cita:', err)
@@ -58,14 +63,25 @@ export class Cita {
 
   // Obtener una cita por ID
   obtenerCita(id: number): Observable<CitaInterface> {
-    return this.http.get<CitaInterface>(`${this.apiUrl}/${id}`);
+    return this.http.get<CitaInterface>(`${this.apiAgendarUrl}/${id}`);
   }
 
   // Eliminar una cita (DELETE)
   eliminarCita(id: number): void {
-    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+    this.http.delete(`${this.apiCitasMedicasUrl}/${id}`).subscribe({
       next: () => this.cargarCitas(),
       error: (err) => console.error('Error al eliminar cita:', err)
     });
   }
+
+  actualizarEstado(id: number, estado: string): void {
+    this.http.patch(
+      `${this.apiCitasMedicasUrl}/${id}/estado`,
+      { estado }
+    ).subscribe({
+      next: () => this.cargarCitas(),
+      error: (err) => console.error('Error al actualizar estado:', err)
+    });
+  }
+
 }

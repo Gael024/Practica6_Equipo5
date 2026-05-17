@@ -23,32 +23,72 @@ export class CitasPage implements OnInit {
 
   constructor(private citaService: Cita) { }
 
-  ngOnInit(): void {
-    // Recargar citas del backend al entrar a la página
-    this.citaService.cargarCitas();
-    this.citaService.citas$.subscribe(citas => {
-      this.citas = citas;
-      this.citasFiltradas = [...citas];
-    });
-  }
+ngOnInit(): void {
+
+  this.citaService.citas$.subscribe(citas => {
+
+    this.citas = citas;
+
+    this.aplicarFiltros();
+
+  });
+
+  this.citaService.cargarCitas();
+
+}
+
+  // aplicarFiltros(): void {
+  //   this.citasFiltradas = this.citas.filter(cita => {
+  //     let cumpleEspecialidad = !this.filtros.especialidad || cita.especialidad === this.filtros.especialidad;
+  //     let cumpeFechaDesde = !this.filtros.fechaDesde || cita.fechaCita >= this.filtros.fechaDesde;
+  //     let cumpeFechaHasta = !this.filtros.fechaHasta || cita.fechaCita <= this.filtros.fechaHasta;
+
+  //     return cumpleEspecialidad && cumpeFechaDesde && cumpeFechaHasta;
+  //   });
+  // }
 
   aplicarFiltros(): void {
-    this.citasFiltradas = this.citas.filter(cita => {
-      let cumpleEspecialidad = !this.filtros.especialidad || cita.especialidad === this.filtros.especialidad;
-      let cumpeFechaDesde = !this.filtros.fechaDesde || cita.fechaCita >= this.filtros.fechaDesde;
-      let cumpeFechaHasta = !this.filtros.fechaHasta || cita.fechaCita <= this.filtros.fechaHasta;
 
-      return cumpleEspecialidad && cumpeFechaDesde && cumpeFechaHasta;
-    });
-  }
+  this.citasFiltradas = this.citas.filter(cita => {
 
+    const cumpleEspecialidad =
+      !this.filtros.especialidad ||
+      cita.especialidad === this.filtros.especialidad;
+
+    const cumpleFechaDesde =
+      !this.filtros.fechaDesde ||
+      cita.fechaCita >= this.filtros.fechaDesde;
+
+    const cumpleFechaHasta =
+      !this.filtros.fechaHasta ||
+      cita.fechaCita <= this.filtros.fechaHasta;
+
+    return (
+      cumpleEspecialidad &&
+      cumpleFechaDesde &&
+      cumpleFechaHasta
+    );
+
+  });
+
+}
+
+  // limpiarFiltros(): void {
+  //   this.filtros = {
+  //     especialidad: '',
+  //     fechaDesde: '',
+  //     fechaHasta: ''
+  //   };
+  //   this.citasFiltradas = [...this.citas];
+  // }
   limpiarFiltros(): void {
     this.filtros = {
       especialidad: '',
       fechaDesde: '',
       fechaHasta: ''
     };
-    this.citasFiltradas = [...this.citas];
+
+    this.aplicarFiltros();
   }
 
   formatearFecha(fechaStr: string): string {
@@ -57,11 +97,25 @@ export class CitasPage implements OnInit {
     return fecha.toLocaleDateString('es-ES', opciones);
   }
 
+  // eliminarCita(id: number): void {
+  //   if (confirm('¿Está seguro de que desea eliminar esta cita?')) {
+  //     this.citaService.eliminarCita(id);
+  //   }
+  // }
+
   eliminarCita(id: number): void {
-    if (confirm('¿Está seguro de que desea eliminar esta cita?')) {
-      this.citaService.eliminarCita(id);
-    }
+
+  if (confirm('¿Está seguro de que desea eliminar esta cita?')) {
+
+    this.citaService.eliminarCita(id);
+
+    this.citasFiltradas = this.citasFiltradas.filter(
+      cita => cita.id !== id
+    );
+
   }
+
+}
 
   exportarATexto(): void {
     let contenido = 'REPORTE DE CITAS MÉDICAS\n';
@@ -86,4 +140,23 @@ export class CitasPage implements OnInit {
     element.click();
     document.body.removeChild(element);
   }
+
+  actualizarEstado(id: number, estado: string): void {
+
+  this.citaService.actualizarEstado(id, estado);
+
+  const cita = this.citasFiltradas.find(
+    c => c.id === id
+  );
+
+  if (cita) {
+    cita.estado = estado;
+  }
+
+}
+
+
+
+
+
 }

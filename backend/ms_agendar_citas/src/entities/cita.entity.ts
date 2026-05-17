@@ -2,19 +2,20 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('citas')
 export class Cita {
+
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 150 })
+  @Column()
   nombre: string;
 
-  @Column({ type: 'varchar', length: 150 })
+  @Column()
   correo: string;
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column()
   telefono: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column()
   especialidad: string;
 
   @Column({ type: 'date' })
@@ -22,4 +23,10 @@ export class Cita {
 
   @Column({ type: 'time' })
   horaCita: string;
+
+  @Column({
+    default: 'pendiente'
+  })
+  estado: string;
+
 }

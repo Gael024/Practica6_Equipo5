@@ -19,10 +19,10 @@ export class CitasController {
 
   @Patch(':id/estado')
   actualizarEstado(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() actualizarEstadoDto: ActualizarEstadoCitaDto,
+    @Param('id') id: string,
+    @Body() dto: ActualizarEstadoCitaDto,
   ) {
-    return this.citasService.actualizarEstado(id, actualizarEstadoDto);
+    return this.citasService.actualizarEstado(+id, dto);
   }
 
   @Patch(':id/cancelar')

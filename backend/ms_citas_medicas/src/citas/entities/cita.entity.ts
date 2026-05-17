@@ -13,32 +13,31 @@ export enum EstadoCita {
 
 @Entity('citas')
 export class Cita {
+
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'nombre' })
+  @Column()
   nombre: string;
 
-  @Column({ name: 'correo' })
-  email: string;
+  @Column()
+  correo: string;
 
-  @Column({ name: 'telefono' })
+  @Column()
   telefono: string;
 
-  @Column({ name: 'especialidad' })
+  @Column()
   especialidad: string;
 
-  @Column({ name: 'fechacita', type: 'date' })
-  fecha: string;
+  @Column({ type: 'date' })
+  fechaCita: string;
 
-  @Column({ name: 'horacita', type: 'time' })
-  hora: string;
+  @Column({ type: 'time' })
+  horaCita: string;
 
   @Column({
-    name: 'estado',
-    type: 'varchar',
-    length: 20,
-    default: EstadoCita.PENDIENTE,
+    default: 'pendiente'
   })
-  estado: EstadoCita;
+  estado: string;
+
 }

@@ -66,6 +66,7 @@
             <th>Especialidad</th>
             <th>Fecha</th>
             <th>Hora</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -84,12 +85,38 @@
             <td>{{ cita.especialidad }}</td>
             <td>{{ formatearFecha(cita.fechaCita) }}</td>
             <td>{{ cita.horaCita }}</td>
+            <td>{{ cita.estado }}</td>
+
+            
             <td>
-              <button class="btn btn-sm btn-danger" (click)="eliminarCita(cita.id)" title="Eliminar">
+
+              <button class="btn btn-sm btn-danger"
+                      (click)="eliminarCita(cita.id)"
+                      title="Eliminar">
                 <i class="bi bi-trash"></i>
               </button>
+
+              <button class="btn btn-sm btn-success"
+                      (click)="actualizarEstado(cita.id, 'confirmada')">
+                Confirmar
+              </button>
+
+              <button class="btn btn-sm btn-warning"
+                      (click)="actualizarEstado(cita.id, 'cancelada')">
+                Cancelar
+              </button>
+
+              <button class="btn btn-sm btn-info"
+                      (click)="actualizarEstado(cita.id, 'completada')">
+                Completar
+              </button>
+
             </td>
+
+
           </tr>
+
+
         </tbody>
       </table>
     </div>

@@ -21,7 +21,7 @@ import { Cita } from './citas/entities/cita.entity';
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_DATABASE || process.env.DB_NAME || 'citas_db',
       entities: [Cita],
-      synchronize: false,
+      synchronize: true,
     }),
 
     CitasModule,
